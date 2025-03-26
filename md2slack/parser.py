@@ -30,24 +30,21 @@ class SlackMarkdown:
         return self.parse(text)
 
     def parse(self, text):
-        """
-        Parses and converts Markdown text into Slack-compatible format.
+        # Ensure fresh instance each time
+        self.block_lexer = SlackBlockLexer()
+        self.inline_lexer = SlackInlineLexer()
+        self.renderer = SlackRenderer()
 
-        Args:
-            text (str): The Markdown text to be processed.
-
-        Returns:
-            str: The formatted Slack-compatible output.
-        """
+        # Continue parsing as usual
         text = self._preprocess(text)
         tokens = self.block_lexer.tokenize(text)
 
         for token in tokens:
-            # Skip inline formatting inside code blocks
-            if not token.get('raw', False):
-                token['value'] = self.inline_lexer.parse(token['value'])
+            if not token.get("raw", False):
+                token["value"] = self.inline_lexer.parse(token["value"])
 
         return self.renderer.render(tokens).strip()
+
     
     @staticmethod
     def _preprocess(text, tab=4):

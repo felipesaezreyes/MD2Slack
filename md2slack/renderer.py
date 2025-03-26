@@ -30,7 +30,7 @@ class SlackRenderer:
                 output.append(f"{token['value']}")
             elif token['type'] == 'TABLE':
                 table_text = self._format_table(token['value'])
-                output.append(f"```\n{table_text}\n```")
+                output.append(f"{table_text}\n")
             elif token['type'] == 'BLOCK_QUOTE':
                 quote_prefix = '>' * token['level']
                 output.append(f"{quote_prefix} {indent_spaces}{token['value']}")
@@ -63,11 +63,15 @@ class SlackRenderer:
             str: Formatted table as a Slack-compatible text block.
         """
         rows = [row.strip('|').split('|') for row in table_md.strip().split('\n') if row.strip()]
-        col_widths = [max(len(cell.strip()) for cell in column) for column in zip(*rows)]
+        
+        # Trim each cell and calculate max column width for alignment
+        rows = [[cell.strip() for cell in row] for row in rows]
+        col_widths = [max(len(cell) for cell in column) for column in zip(*rows)]
 
+        # Format rows with properly spaced columns
         formatted_rows = []
         for row in rows:
-            formatted_row = " | ".join(cell.strip().ljust(col_widths[idx]) for idx, cell in enumerate(row))
+            formatted_row = " | ".join(cell.ljust(col_widths[idx]) for idx, cell in enumerate(row))
             formatted_rows.append(formatted_row)
 
-        return "\n".join(formatted_rows)
+        return "```\n" + "\n".join(formatted_rows) + "\n```"
