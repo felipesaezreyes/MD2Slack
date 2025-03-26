@@ -41,23 +41,6 @@ parser = SlackMarkdown()
 slack_text = parser("## Hello *world*")
 print(slack_text)  # Outputs: *Hello _world_*
 ```
-
-### Example: Lists & Code Blocks
-```python
-markdown_text = '''
-# Features
-- **Bold text**
-- *Italic text*
-- `Inline code`
-
-```python
-def hello():
-    print("Hello, Slack!")
-```
-'''
-print(parser(markdown_text))
-```
-
 ---
 
 ## Development & Contribution
