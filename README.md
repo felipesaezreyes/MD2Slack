@@ -1,7 +1,7 @@
 # MD2Slack - Markdown to Slack Converter
 
 ![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)  
-![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/MayzTex/md2slack/ci.yml?branch=main)  
+![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/MayzTex/MD2Slack/ci.yml?branch=main)  
 ![PyPI version](https://img.shields.io/pypi/v/md2slack)  
 ![Python](https://img.shields.io/badge/python-3.6%2B-blue)  
 

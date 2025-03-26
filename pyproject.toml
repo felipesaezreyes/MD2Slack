@@ -3,7 +3,7 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "MD2Slack"
+name = "md2Slack"
 version = "0.1.0"
 description = "Convert Markdown to Slack-friendly format."
 authors = [
