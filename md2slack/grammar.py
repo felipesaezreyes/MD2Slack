@@ -70,10 +70,13 @@ class SlackInlineGrammar:
     IMAGE = re.compile(r'!\[(.*?)\]\((.+?)(?:\s".*?")?\)')
     
     # Matches Slack user mentions (<@USERID>)
-    MENTION_USER = re.compile(r'(@[a-zA-Z0-9_]+|<@([A-Z0-9]+)>)')
+    MENTION_USER = re.compile(r'(?<![\w<])@([a-zA-Z0-9_]+)\b|<@([A-Z0-9]+)>')
     
     # Matches Slack channel mentions (<#CHANNELID>)
     MENTION_CHANNEL = re.compile(r'(#[a-zA-Z0-9_]+|<#([A-Z0-9]+)>)')
     
     # Matches line breaks (two spaces followed by a newline)
     LINEBREAK = re.compile(r'  \n')
+
+    # Matches raw email addresses (0rE3D@example.com, etc.)
+    RAW_EMAIL = re.compile(r'(?<![\w<@])([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})(?![\w>])')

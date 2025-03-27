@@ -180,9 +180,11 @@ class SlackInlineLexer:
             return f"_{match.group(1) or match.group(2)}_"
         
         def user_mention(match):
-            if match.group(1).startswith('<@'):
-                return match.group(1)  # Return already formatted Slack mention
-            return f"<{match.group(1)}>"  # Format @username into Slack format
+            if match.group(2):  # This is the <@USERID> format
+                return f"<@{match.group(2)}>"
+            elif match.group(1):  # This is the @username format
+                return f"<@{match.group(1)}>"
+            return match.group(0)
         
         def channel_mention(match):
             if match.group(1).startswith('<#'):
@@ -199,5 +201,6 @@ class SlackInlineLexer:
         text = self.rules.LINEBREAK.sub(r'\n', text)
         text = self.rules.MENTION_USER.sub(user_mention, text)
         text = self.rules.MENTION_CHANNEL.sub(channel_mention, text)
+        text = self.rules.RAW_EMAIL.sub(r'<mailto:\1>', text)
         
         return text

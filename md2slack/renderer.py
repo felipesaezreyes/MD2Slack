@@ -21,7 +21,7 @@ class SlackRenderer:
             indent_spaces = " " * indent_level
             
             if token['type'] == 'HRULE':
-                output.append("")
+                output.append("\n")
             elif token['type'] == 'PARAGRAPH':
                 output.append(f"{indent_spaces}{token['value']}")
             elif token['type'] == 'PARAGRAPH_BREAK':

@@ -79,3 +79,6 @@ def test_hrules():
 """
     ) == ""
 
+def test_emails():
+    parser = SlackMarkdown()
+    assert parser("aB2k4@example.com") == "<mailto:aB2k4@example.com>"
