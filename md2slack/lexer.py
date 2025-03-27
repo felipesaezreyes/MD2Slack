@@ -201,6 +201,6 @@ class SlackInlineLexer:
         text = self.rules.LINEBREAK.sub(r'\n', text)
         text = self.rules.MENTION_USER.sub(user_mention, text)
         text = self.rules.MENTION_CHANNEL.sub(channel_mention, text)
-        text = self.rules.RAW_EMAIL.sub(r'<mailto:\1>', text)
+        text = self.rules.RAW_EMAIL.sub(r'<mailto:\1|\1>', text)
         
         return text
