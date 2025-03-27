@@ -35,7 +35,7 @@ def hello():
 
 def test_lists():
     parser = SlackMarkdown()
-    assert parser("- Item 1\n- Item 2") == "- Item 1\n- Item 2"
+    assert parser("- Item 1\n- Item 2") == "• Item 1\n• Item 2"
     assert parser("1. First\n2. Second") == "1. First\n2. Second"
 
 def test_blockquote():
@@ -68,3 +68,14 @@ def test_links():
 def test_images():
     parser = SlackMarkdown()
     assert parser("![Alt text](https://image.url)") == "<https://image.url|Alt text>"
+
+def test_hrules():
+    parser = SlackMarkdown()
+    assert parser(
+"""
+
+---
+
+"""
+    ) == ""
+

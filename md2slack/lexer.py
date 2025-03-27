@@ -36,8 +36,34 @@ class SlackBlockLexer:
             while list_stack and list_stack[-1].get('indent', 0) >= indent_level:
                 list_stack.pop()
 
+            if self.rules.HRULE.match(line.strip()):
+                self.tokens.append({'type': 'HRULE', 'indent': indent_level, 'value': line.strip()})
+                count += 1
+
+                # Consume any following blank lines
+                while count < len(lines) and lines[count].strip() == "":
+                    count += 1
+
+                continue
+
+            # Case 2: Current line is empty, and next line is a horizontal rule
+            elif (
+                line.strip() == ""
+                and count + 1 < len(lines)
+                and self.rules.HRULE.match(lines[count + 1].strip())
+            ):
+                hrule_line = lines[count + 1].strip()
+                count += 2
+
+                # Consume any following blank lines after the HRULE
+                while count < len(lines) and lines[count].strip() == "":
+                    count += 1
+
+                self.tokens.append({'type': 'HRULE', 'indent': indent_level, 'value': hrule_line})
+                continue
+
             # Detect table by checking for "|"
-            if line.startswith("|"):
+            elif line.startswith("|"):
                 table_lines = [line]  # Start collecting table rows
                 count += 1  # Move to next line
 
@@ -68,7 +94,7 @@ class SlackBlockLexer:
 
             # Regular Markdown processing
             for rule_name in [
-                'SETEXT_HEADER', 'HEADER', 'HRULE', 'PARAGRAPH_BREAK',
+                'SETEXT_HEADER', 'HEADER', 'PARAGRAPH_BREAK',
                 'BLOCK_QUOTE', 'CODE_BLOCK', 'UNORDERED_LIST', 
                 'NUMBERED_LIST', 'LETTERED_LIST', 'PARAGRAPH'
             ]:
@@ -104,7 +130,7 @@ class SlackBlockLexer:
         """
         token = {'type': rule_name, 'indent': indent_level, 'value': match.group(1).strip() if match.groups() else ""}
 
-        if rule_name in ['HRULE', 'PARAGRAPH_BREAK']:
+        if rule_name in ['PARAGRAPH_BREAK']:
             return token
         elif rule_name == 'SETEXT_HEADER':
             token.update({'value': match.group(1).strip(), 'level': 1 if match.group(2).startswith('=') else 2})
@@ -117,7 +143,7 @@ class SlackBlockLexer:
         elif rule_name == 'HEADER':
             token.update({'value': match.group(2), 'level': len(match.group(1))})
         elif rule_name in ['UNORDERED_LIST', 'NUMBERED_LIST', 'LETTERED_LIST']:
-            bullet = '-' if rule_name == 'UNORDERED_LIST' else f"{match.group(2)})"
+            bullet = '•' if rule_name == 'UNORDERED_LIST' else f"{match.group(2)})"
             token.update({'value': match.group(3), 'bullet': bullet})
         else:
             token['value'] = match.group(1) if match.groups() else ""
