@@ -4,12 +4,12 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "md2Slack"
-version = "0.1.2"
+version = "0.1.2.1"
 description = "Convert Markdown to Slack-friendly format."
 authors = [
     {name = "Eric Andersson"}
 ]
-license = {text = "MIT"}
+license = "MIT"
 dependencies = []
 requires-python = ">=3.6"
 readme = "README.md"
