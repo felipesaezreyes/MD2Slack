@@ -1,3 +1,6 @@
+import re
+
+
 class SlackRenderer:
     """
     Renders parsed Markdown tokens into Slack-compatible output.
@@ -35,7 +38,8 @@ class SlackRenderer:
                 quote_prefix = '>' * token['level']
                 output.append(f"{quote_prefix} {indent_spaces}{token['value']}")
             elif token['type'] == 'HEADER':
-                output.append(f"{indent_spaces}*{token['value']}*")
+                clean_value = re.sub(r'^\*{1,3}(.+?)\*{1,3}$', r'\1', token['value'])
+                output.append(f"{indent_spaces}*{clean_value}*")
             elif token['type'] in ['UNORDERED_LIST', 'NUMBERED_LIST', 'LETTERED_LIST']:
                 if token['type'] == 'NUMBERED_LIST':
                     if indent_level not in list_counters:
