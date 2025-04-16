@@ -8,7 +8,8 @@ def test_headers():
     assert parser("### **Heading 3**") == "*Heading 3*"
     assert parser("#### *Heading 4*") == "*_Heading 4_*"
     assert parser("##### ***Heading 5***") == "*_Heading 5_*"
-
+    assert parser("### 1. **Heading 6**") == "*1. Heading 6*"
+    assert parser("### 1. *Heading 6*") == "*_1. Heading 6_*"
 
 def test_bold_italic():
     parser = SlackMarkdown()

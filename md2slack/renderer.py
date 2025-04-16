@@ -38,8 +38,29 @@ class SlackRenderer:
                 quote_prefix = '>' * token['level']
                 output.append(f"{quote_prefix} {indent_spaces}{token['value']}")
             elif token['type'] == 'HEADER':
-                clean_value = re.sub(r'^\*{1,3}(.+?)\*{1,3}$', r'\1', token['value'])
-                output.append(f"{indent_spaces}*{clean_value}*")
+                raw = token.get("raw", "")
+                value = token["value"]
+                if re.fullmatch(r'\*{3}(.+?)\*{3}', raw):
+                    inner = re.sub(r'^\*{3}(.+?)\*{3}$', r'\1', raw)
+                    output.append(f"{indent_spaces}*_{inner}_*")
+                elif re.fullmatch(r'\*{2}(.+?)\*{2}', raw):
+                    inner = re.sub(r'^\*{2}(.+?)\*{2}$', r'\1', raw)
+                    output.append(f"{indent_spaces}*{inner}*")
+                elif re.fullmatch(r'\*(.+?)\*', raw):
+                    inner = re.sub(r'^\*(.+?)\*$', r'\1', raw)
+                    output.append(f"{indent_spaces}*_{inner}_*")
+                elif re.search(r'\*{3}(.+?)\*{3}', raw):
+                    inner = re.sub(r'\*{3}(.+?)\*{3}', r'\1', raw)
+                    output.append(f"{indent_spaces}*_{inner}_*")
+                elif re.search(r'\*{2}(.+?)\*{2}', raw):
+                    inner = re.sub(r'\*{2}(.+?)\*{2}', r'\1', raw)
+                    output.append(f"{indent_spaces}*{inner}*")
+                elif re.search(r'\*(.+?)\*', raw):
+                    inner = re.sub(r'\*(.+?)\*', r'\1', raw)
+                    output.append(f"{indent_spaces}*_{inner}_*")
+                else:
+                    clean = re.sub(r'\*{1,3}', '', value)
+                    output.append(f"{indent_spaces}*{clean}*")
             elif token['type'] in ['UNORDERED_LIST', 'NUMBERED_LIST', 'LETTERED_LIST']:
                 if token['type'] == 'NUMBERED_LIST':
                     if indent_level not in list_counters:
