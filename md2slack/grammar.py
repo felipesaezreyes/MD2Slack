@@ -79,4 +79,13 @@ class SlackInlineGrammar:
     LINEBREAK = re.compile(r'  \n')
 
     # Matches raw email addresses (0rE3D@example.com, etc.)
-    RAW_EMAIL = re.compile(r'(?<![\w<@])([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})(?![\w>])')
+    RAW_EMAIL = re.compile(
+        r'(?<![\w<@])'  # Ensure the email is not preceded by a word character, '<', or '@'
+        r'(?<!mailto:)'  # Ensure the email is not preceded by 'mailto:'
+        r'([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})'  # Match the email address
+        r'(?![\w>])'  # Ensure the email is not followed by a word character or '>'
+        r'(?!\?subject=)'  # Exclude emails that are part of a mailto link with a subject
+    )
+
+    # Matches email links ([email](mailto:0rE3D@example.com))
+    MAILTO_LINK = re.compile(r'\[([^\]]+?)\]\((mailto:[^)]+?)\)')

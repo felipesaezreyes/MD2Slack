@@ -191,6 +191,29 @@ class SlackInlineLexer:
                 return match.group(1)  # Return already formatted Slack channel mention
             return f"<{match.group(1)}>"  # Format #channel_name into Slack format
         
+        def mailto_link(match):
+            display_text = match.group(1)
+            mailto = match.group(2)
+
+            # Check if the mailto link is already formatted
+            if mailto.startswith("mailto:"):
+                return f"<{mailto}|{display_text}>"
+            elif mailto.startswith("<mailto:"):
+                return f"{mailto}|{display_text}>"
+
+            return f"<mailto:{mailto}|{display_text}>"
+        
+        def raw_email(match):
+            email = match.group(1)
+            print(email)
+
+            # Check if the email is already formatted as a mailto link
+            if email.startswith("<mailto:"):
+                return match.group(0)  # Return the original match without reprocessing
+
+            return f"<mailto:{email}|{email}>"
+        
+        text = self.rules.MAILTO_LINK.sub(mailto_link, text)
         text = self.rules.ITALIC.sub(replace_italic, text)
         text = self.rules.BOLD_ITALIC.sub(r'*_\2_*', text)
         text = self.rules.BOLD.sub(r'*\2*', text)
@@ -201,6 +224,6 @@ class SlackInlineLexer:
         text = self.rules.LINEBREAK.sub(r'\n', text)
         text = self.rules.MENTION_USER.sub(user_mention, text)
         text = self.rules.MENTION_CHANNEL.sub(channel_mention, text)
-        text = self.rules.RAW_EMAIL.sub(r'<mailto:\1|\1>', text)
+        text = self.rules.RAW_EMAIL.sub(raw_email, text)
         
         return text
